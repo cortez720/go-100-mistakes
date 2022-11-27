@@ -16,6 +16,8 @@ func main() {
 	for _, a := range accounts { // Everything (a) here is copy
 		a.balance += 1000 // Присваение копии, // Mutates only a in this scope
 	}
+	
+	spew.Dump(accounts)
 
 	for i := range accounts {
 		accounts[i].balance += 1000 // Присваение сущ. объекту
