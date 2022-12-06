@@ -8,8 +8,38 @@ import (
 	"time"
 )
 
+const log = 20
+
+func main() {
+	value := int(math.Pow(2, log))
+	fmt.Println(value)
+
+	slice := rand.Perm(value)
+	slice2 := make([]int, value)
+	slice3 := make([]int, value)
+
+	copy(slice2, slice)
+	copy(slice3, slice)
+
+	start := time.Now()
+	sequentialMergesort(slice)
+	fmt.Print(slice[:10])
+	fmt.Println(time.Now().Sub(start))
+
+	// start = time.Now()
+	// parallelMergesortV1(slice2)
+	// fmt.Print(slice2[:10])
+	// fmt.Println(time.Now().Sub(start))
+
+	start = time.Now()
+	parallelMergesortV2(slice3)
+	fmt.Print(slice3[:10])
+	fmt.Println(time.Now().Sub(start))
+
+}
+
 func sequentialMergesort(s []int) {
-	if len(s) == 1 {
+	if len(s) <= 1 {
 		return
 	}
 
@@ -19,43 +49,18 @@ func sequentialMergesort(s []int) {
 	merge(s, middle)
 }
 
-func merge(s []int, middle int) {
-	helper := make([]int, len(s))
-	copy(helper, s)
-
-	helperLeft := 0
-	helperRight := middle
-	current := 0
-	high := len(s) - 1
-
-	for helperLeft <= middle-1 && helperRight <= high {
-		if helper[helperLeft] <= helper[helperRight] {
-			s[current] = helper[helperLeft]
-			helperLeft++
-		} else {
-			s[current] = helper[helperRight]
-			helperRight++
-		}
-		current++
-	}
-
-	for helperLeft <= middle-1 {
-		s[current] = helper[helperLeft]
-		current++
-		helperLeft++
-	}
-}
-
-// If workload is too slow, it will be work slower.
+// If workload is too slow, it will be work slower. // All the same it's slower with over the constant. Why??
 func parallelMergesortV1(s []int) { // 8 times slower
-	if len(s) == 1 {
+
+	if len(s) <= 1 {
 		return
 	}
+
+	middle := len(s) / 2
 
 	var wg sync.WaitGroup
 	wg.Add(2)
 
-	middle := len(s) / 2
 	go func() {
 		defer wg.Done()
 		parallelMergesortV1(s[:middle])
@@ -68,12 +73,13 @@ func parallelMergesortV1(s []int) { // 8 times slower
 
 	wg.Wait()
 	merge(s, middle)
+
 }
 
-const max = 2048
+const max = 2048 // It seems like it's really optimal value
 
 func parallelMergesortV2(s []int) {
-	if len(s) == 1 {
+	if len(s) <= 1 {
 		return
 	}
 
@@ -102,31 +108,29 @@ func parallelMergesortV2(s []int) {
 	merge(s, middle)
 }
 
-const log = 4
+func merge(s []int, middle int) { // Maybe it's matter of it's implementation. (Parallel slower with over the constant)
+	helper := make([]int, len(s))
+	copy(helper, s)
 
-func main() {
-	value := int(math.Pow(2, log))
+	helperLeft := 0
+	helperRight := middle
+	current := 0
+	high := len(s) - 1
 
-	slice := rand.Perm(value)
-	slice2 := make([]int, 0, value)
-	slice3 := make([]int, 0, value)
+	for helperLeft <= middle-1 && helperRight <= high {
+		if helper[helperLeft] <= helper[helperRight] {
+			s[current] = helper[helperLeft]
+			helperLeft++
+		} else {
+			s[current] = helper[helperRight]
+			helperRight++
+		}
+		current++
+	}
 
-	copy(slice2, slice)
-	copy(slice3, slice)
-
-	start := time.Now()
-	sequentialMergesort(slice)
-	fmt.Print(slice[:10])
-	fmt.Println(time.Now().Sub(start))
-
-	start = time.Now()
-	parallelMergesortV1(slice2)
-	fmt.Print(slice2[:10])
-	fmt.Println(time.Now().Sub(start))
-
-	start = time.Now()
-	parallelMergesortV2(slice3)
-	fmt.Print(slice3[:10])
-	fmt.Println(time.Now().Sub(start))
-
+	for helperLeft <= middle-1 {
+		s[current] = helper[helperLeft]
+		current++
+		helperLeft++
+	}
 }
