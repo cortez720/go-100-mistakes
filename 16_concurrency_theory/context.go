@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 )
 
@@ -34,7 +33,7 @@ func (impl) Publish(ctx context.Context, position Position) error {
 	time.Sleep(time.Millisecond * 10)
 
 	if deadline.Before(time.Now()) {
-		return context.Canceled
+		return context.DeadlineExceeded
 	}
 
 	fmt.Println(position)
@@ -50,3 +49,6 @@ func main() {
 		fmt.Println(err)
 	}
 }
+
+// Use context.TODO instead of context.Background if we in doubt to use context
+// All contexts in standart library are safe gorutine-safe.
