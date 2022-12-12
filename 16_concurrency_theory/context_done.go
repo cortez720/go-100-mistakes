@@ -36,5 +36,5 @@ func main() {
 	ch <- m
 	ch <- m
 
-	time.Sleep(15 * time.Millisecond) // Sleep here to not exit too early. Wait to print all messages.
+	time.Sleep(15 * time.Millisecond) // Sleep here to not exit too early, to escape race condition. Wait to print all messages.
 }
