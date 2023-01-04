@@ -44,6 +44,10 @@ func writeToFile2(content []byte) (err error) {
 		panic(err)
 	}
 
+	defer func(){
+		_ = f.Close()
+	}()
+
 	_, err = f.Write(content)
 	if err != nil {
 		return err
