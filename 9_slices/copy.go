@@ -5,11 +5,11 @@ import (
 )
 
 func main() {
-	src := []int{1, 2, 3, 4} // 0 Len
+	src := []int{1, 2, 3, 4} // 4 Len
 	dst := []int(nil)        // 0 Len
 
 	copy(dst, src)          // nil, [1,2,3,4]
-	fmt.Println(dst == nil) // nil
+	fmt.Println(dst == nil) // true
 
 	dst = make([]int, 0, 3)
 
