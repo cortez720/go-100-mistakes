@@ -10,18 +10,17 @@ func main() {
 	var client *http.Client
 
 	if tracing {
-		client := &http.Client{ //resolution 1
+		client := &http.Client{ 
 			Transport:     nil,
 			CheckRedirect: nil,
 			Jar:           nil,
 			Timeout:       0,
 		}
-
 		spew.Dump(client)
 	}
 
 	if !tracing {
-		client = &http.Client{ //resolution 2
+		client := &http.Client{ 
 			Transport:     nil,
 			CheckRedirect: nil,
 			Jar:           nil,

@@ -18,7 +18,7 @@ func concat(strs []string) { // ~40 times slower then builder with Grow
 	fmt.Println(res)
 }
 
-func concatV2(strs []string) { // Optimize solution with builder without Grow // 78% slower
+func concatV2(strs []string) { // Optimize solution with builder without Grow // 78% slower vs V3
 	res := strings.Builder{}
 	for _, s := range strs {
 		res.WriteString(s) // Not making new strings, but may allocate slice memmory.

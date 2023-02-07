@@ -31,6 +31,8 @@ func main(){
 	c4 := customer2{1, "Vanya", []float64{1.}}
 
 	fmt.Println(reflect.DeepEqual(c3, c4))
+	
+	fmt.Println(ourOwnComprasion(c3, c4))
 }
 
 func ourOwnComprasion(c, c2 customer2) bool{ // about 100 faster then reflect.DeepEqual

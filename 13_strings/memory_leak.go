@@ -1,30 +1,45 @@
 package main
 
-import "strings"
+import (
+	"errors"
+	"strings"
 
-type store map[string]string
+	"github.com/davecgh/go-spew/spew"
+)
 
-func main{
-
+type store struct {
+	data   map[string]string
+	lastID int
 }
 
-func (s store) handleLog(log string) error{
-	if len(log) < 36{
+func main() {
+	s := store{data: make(map[string]string)}
+	s.handleLogV2(strings.Repeat("A", 50))
+	spew.Dump(s)
+}
+
+func (s *store) handleLog(log string) error {
+	if len(log) < 36 {
 		return errors.New("invalid format")
 	}
 
 	s.store(log[:36]) // The log message can consists thousand of bytes, but we keep whole backing array in memory
+
+	return nil
 }
 
-func (s store) handleLogV2(log string) error{
-	if len(log) < 36{
+func (s *store) handleLogV2(log string) error {
+	if len(log) < 36 {
 		return errors.New("invalid format")
 	}
 
-	s.store(string(byte(log[:36]))) // we keep only 36 len string with new byte slice allocation
-	s.store(strings.Clone(log[:36])) // 36 len string copy
+	s.store(string([]byte(log[:36]))) // we keep only 36 len string with new byte slice allocation
+	s.store(strings.Clone(log[:36]))  // 36 len string copy
+
+	return nil
 }
 
-func (s store) store(str string){
-
+func (s *store) store(str string) {
+	s.lastID++
+	s.data[string(s.lastID)] = str
 }
