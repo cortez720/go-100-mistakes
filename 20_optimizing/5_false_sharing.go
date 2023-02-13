@@ -11,10 +11,10 @@ type Input struct {
 	b int64
 }
 
-type InputP struct {
-	a int64
+type ResultP struct {
+	sumA int64
 	_ [56]byte
-	b int64
+	sumB int64
 }
 
 type Result struct {
@@ -48,11 +48,11 @@ func countInputs(inputs []Input) Result {
 	return result
 }
 
-func countInputsPedding(inputs []InputP) Result {
+func countInputsPedding(inputs []Input) ResultP {
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
-	result := Result{}
+	result := ResultP{}
 
 	go func() {
 		for i := 0; i < len(inputs); i++ {
@@ -78,13 +78,12 @@ const counti = 2048
 
 func main() {
 	inputs := make([]Input, counti)
-	inputsP := make([]InputP, counti)
 
 	t := time.Now()
 	countInputs(inputs)
 	fmt.Println(time.Now().Sub(t))
 
 	t = time.Now()
-	countInputsPedding(inputsP) // sometimes it faster because of false sharding.
+	countInputsPedding(inputs) // Faster about 50% because of false cache sharding.
 	fmt.Println(time.Now().Sub(t))
 }
